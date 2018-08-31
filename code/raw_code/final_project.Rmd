@@ -137,21 +137,25 @@ atus.long <- atus.wide %>%
 ```
 
 ```{r age-activity}
-atus.long %>% 
-    group_by(ACTIVITY, TEAGE) %>% 
-    summarise(AVGMINS = mean(MINS)) %>% 
-    ggplot() +
+atus.long %>%
+  group_by(ACTIVITY, TEAGE) %>%
+  summarise(AVGMINS = mean(MINS)) %>%
+  ggplot(atus.long, aes(x=TEAGE, y=AVGMINS)) + geom_point()
 ```
-
+ 
 ### Exploratory Analysis of Income and Activities
-
+ 
 ```{r activity-income}
-atus.long %>% 
-  group_by(ACTIVITY, HEFAMINC) %>% 
-  ## add the rest of the code here
+atus.long %>%
+  group_by(ACTIVITY, HEFAMINC) %>%
+  summarise(AVGMINS_WRK = mean(MINS)) %>%
+   ggplot(aes(x = ACTIVITY)) +
+     geom_bar(aes())
+## add the rest of the code here
 ```
-
-
+ 
+ 
 ```{r save-plot}
-## save the plot above
+ ## save the plot above
+ggsave(filename = "activity_by_income.png", plot = last_plot(), path = "/cloud/project/final_project/figures/explanatory_figures" )
 ```
