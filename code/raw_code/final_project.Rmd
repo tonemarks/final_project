@@ -10,6 +10,7 @@ output: html_document
 list.of.packages <- c("janitor", "ggplot2", "dplyr", "lubridate", "zoo", "forcats", "ggthemes", "knitr", "rmarkdown")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
+install.packages("tidyr")
 
 ## load packages
 library(janitor)
@@ -20,6 +21,7 @@ library(zoo)
 library(forcats)
 library(ggthemes)
 library(knitr)
+library(tidyr)
 
 ## set working directory
 knitr::opts_knit$set(root.dir = '/cloud/project/')
@@ -78,28 +80,27 @@ ggplot(atus.all, aes(CHILDCARE)) +
 ```{r gender-analysis}
 atus.all %>% 
     group_by(TESEX) %>% 
-    mutate(CHILDCARE)
+  summarize(avg = mean(CHILDCARE))
 ```
 
 ```{r replacing-na}
 ## replace -1 in the variable TRDPFTPT with NA.
 atus.all$TRDPFTPT[atus.all$TRDPFTPT == -1] <- NA %>%
   sum(is.na(atus.all$TRDPFTPT))
+table(atus.all$TRDPFTPT)
 ```
 
 ```{r exploratory-analysis}
 ## add your exploratory analysis code here
-names(atus.all)
-select(atus.all, CHILDCARE, TEAGE)
-young_people <- filter(atus.all, TEAGE <= 18) 
-young_people
+atus.sub <- filter(atus.all, TRCHILDNUM >=1)
 ```
 
 ### Regression Analysis
 
 ```{r reg-analysis}
 ## add your regression analysis code here
-reg_model <- lm(, atus.all)
+atus.sub <- subset(atus.all, atus.all$TRCHILDNUM >=1)
+reg_model <- lm(CHILDCARE ~ factor(PEMARITL) + TEAGE + factor(TESEX) + HEFAMINC + TRCHILDNUM + factor(TRDPFTPT), data = atus.sub )
 summary(reg_model)
 ```
 
@@ -107,29 +108,31 @@ summary(reg_model)
 
 ```{r activity-cats}
 atus.wide <- atus.all %>%
-    mutate(act01 = ,
-           act02 = ,
-           act03 = ,
-           act04 = ,
-           act05 = ,
-           act06 = ,
-           act07 = ,
-           act08 = ,
-           act09 = ,
-           act10 = ,
-           act11 = ,
-           act12 = ,
-           act13 = ,
-           act14 = ,
-           act15 = ,
-           act16 = ,
+    mutate(act01 =rowSums(atus.all[,grep("t01",colnames(atus.all))]),
+act02 = rowSums(atus.all[,grep("t02", colnames(atus.all))]),
+           act03 = rowSums(atus.all[,grep("t03", colnames(atus.all))]),
+           act04 = rowSums(atus.all[,grep("t04", colnames(atus.all))]),
+           act05 = rowSums(atus.all[,grep("t05", colnames(atus.all))]),
+           act06 = rowSums(atus.all[,grep("t06", colnames(atus.all))]),
+           act07 = rowSums(atus.all[,grep("t07", colnames(atus.all))]),
+           act08 = rowSums(atus.all[,grep("t08", colnames(atus.all))]),
+           act09 = rowSums(atus.all[,grep("t09", colnames(atus.all))]),
+           act10 = rowSums(atus.all[,grep("t10", colnames(atus.all))]),
+           act11 = rowSums(atus.all[,grep("t11", colnames(atus.all))]),
+           act12 = rowSums(atus.all[,grep("t12", colnames(atus.all))]),
+           act13 = rowSums(atus.all[,grep("t13", colnames(atus.all))]),
+           act14 = rowSums(atus.all[,grep("t14", colnames(atus.all))]),
+           act15 = rowSums(atus.all[,grep("t15", colnames(atus.all))]),
+           act16 = rowSums(atus.all[,grep("t16", colnames(atus.all))]),
            # act17 = , there is no category 17 in the data
-           act18 = ) %>% 
+           act18 = rowSums(atus.all[,grep("t18", colnames(atus.all))])) %>% 
     select(TUCASEID, TEAGE, HEFAMINC, starts_with("act"))
 ```
 
 ```{r wide-to-long}
-atus.long <- atus.wide %>% gather(atus.all, ACTIVITY, MINS)
+atus.long <- atus.wide %>% 
+  gather(key="ACTIVITY", value="MINS")
+
   # use code to convert the wide format to long.
 ```
 
