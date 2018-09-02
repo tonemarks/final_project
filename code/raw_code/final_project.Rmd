@@ -131,7 +131,7 @@ act02 = rowSums(atus.all[,grep("t02", colnames(atus.all))]),
 
 ```{r wide-to-long}
 atus.long <- atus.wide %>% 
-  gather(key="ACTIVITY", value="MINS")
+  gather(key="ACTIVITY", value="MINS", act01:act18)
 
   # use code to convert the wide format to long.
 ```
@@ -140,7 +140,7 @@ atus.long <- atus.wide %>%
 atus.long %>%
   group_by(ACTIVITY, TEAGE) %>%
   summarise(AVGMINS = mean(MINS)) %>%
-  ggplot(atus.long, aes(x=TEAGE, y=AVGMINS)) + geom_point()
+  ggplot(aes(x=TEAGE, y=AVGMINS)) + geom_point()
 ```
  
 ### Exploratory Analysis of Income and Activities
