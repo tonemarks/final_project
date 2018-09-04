@@ -157,5 +157,5 @@ atus.long %>%
  
 ```{r save-plot}
  ## save the plot above
-ggsave(filename = "activity_by_income.png", plot = last_plot(), path = "/cloud/project/final_project/figures/explanatory_figures" )
+ggsave(filename = "activity-income.png", plot = last_plot(), path = "/cloud/project/final_project/figures/explanatory_figures")
 ```
