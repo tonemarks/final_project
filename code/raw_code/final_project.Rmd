@@ -144,13 +144,14 @@ atus.long %>%
 ```
  
 ### Exploratory Analysis of Income and Activities
- 
 ```{r activity-income}
 atus.long %>%
   group_by(ACTIVITY, HEFAMINC) %>%
   summarise(AVGMINS_WRK = mean(MINS)) %>%
-   ggplot(aes(x = ACTIVITY)) +
-     geom_bar(aes())
+  mutate(Totalmin = sum(AVGMINS_WRK)) %>%
+  mutate(percent = AVGMINS_WRK/Totalmin) %>%
+  ggplot(aes(x = ACTIVITY,y = percent, fill = HEFAMINC)) +
+   geom_bar(stat="identity") + coord_flip()
 ## add the rest of the code here
 ```
  
